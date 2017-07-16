@@ -96,15 +96,15 @@ with tf.name_scope("accuracy"):
     tf.summary.scalar("accuracy", accuracy)
 sess.run(tf.global_variables_initializer())
 
-writer = tf.summary.FileWriter("/home/akshay/Desktop/2")
+writer = tf.summary.FileWriter("graph")
 writer.add_graph(sess.graph)
 
 summ = tf.summary.merge_all()
 for _ in range(200):
     print "Hello"
-    sess.run(train_step,feed_dict={X:private_test_x, Y:y_private}) 
+    sess.run(train_step,feed_dict={X:train_x, Y:y_train}) 
     if _%10==0:
-        [a,s] =sess.run([accuracy, summ],feed_dict={X:private_test_x, Y:y_private}) 
+        [a,s] =sess.run([accuracy, summ],feed_dict={X:train_x, Y:y_train}) 
         writer.add_summary(s,_)
         print("steps %d accuracy %g" %(_,a))
     print "hai"
