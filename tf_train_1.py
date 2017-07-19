@@ -4,7 +4,7 @@ import pandas as pd
 import tensorflow as  tf
 
 # Importing data
-data = pd.read_csv("/data/fer2013/fer2013.csv")
+data = pd.read_csv("fer2013.csv")
 
 #Splitting the data into the Training set and Test set
 train_data = data[data.Usage == "Training"]
@@ -118,5 +118,4 @@ print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0}))
         
 
 
-# -*- coding: utf-8 -*-
 
