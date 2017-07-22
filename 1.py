@@ -81,9 +81,9 @@ keep_prob = tf.placeholder(tf.float32,name="keep_prob")
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
 
-h_fc2 = fullyConnected(h_fc1_drop,1024,512,name="fc2")
+h_fc2 = fullyConnected(h_fc1_drop,512,256,name="fc2")
 
-y_ =fullyConnected(h_fc2,512,7,name="fc3")
+y_ =fullyConnected(h_fc2,256,7,name="fc3")
 
 with tf.name_scope("X-entropy"):
     cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y,logits=y_))
@@ -105,7 +105,7 @@ writer.add_graph(sess.graph)
 saver = tf.train.Saver()
 summ = tf.summary.merge_all()
 for _ in range(1000):
-    for bid in range(int(train_x.shape[0]/300)):
+    for bid in range(int(train_x.shape[0]/100)):
         x1,y1=train_x[bid*100:(bid+1)*100],y_train[bid*100:(bid+1)*100]
         sess.run(train_step,feed_dict={X:x1, Y:y1,keep_prob: 0.5})
     if _%10==0:
