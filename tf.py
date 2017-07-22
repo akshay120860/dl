@@ -54,7 +54,7 @@ def conv2d(x,size_in,size_out,name="conv2d"):
         tf.summary.histogram("weights", w)
         tf.summary.histogram("biases", b)
         tf.summary.histogram("activations1", activation1)
-    if(name=="conv2"):
+    if(name=="conv3"):
         lrn=tf.nn.lrn(activation1, 4, bias=1.0, alpha=0.001 / 9.0, beta=0.75)
         return tf.nn.max_pool(lrn, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="SAME")
     return tf.nn.max_pool(activation1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="SAME")
@@ -74,9 +74,9 @@ x_image = tf.reshape(X, [-1, 48, 48, 1])
 
 h_pool1 =conv2d(x_image, 1,32,"conv1")
 h_pool2 = conv2d(h_pool1,32,64,"conv2")
-#h_pool3 = conv2d(h_pool2,64,128,"conv3")
+h_pool3 = conv2d(h_pool2,64,128,"conv3")
 
-flattern = tf.reshape(h_pool2, [-1, 6*6*128],name="FLATTERN")
+flattern = tf.reshape(h_pool3, [-1, 6*6*128],name="FLATTERN")
 
 h_fc1 = tf.nn.relu(fullyConnected(flattern,6*6*128,512,name="fc1"),name="relu")
 
