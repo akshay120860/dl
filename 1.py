@@ -73,13 +73,10 @@ def fullyConnected(linput,size_in,size_out,name="fc"):
 #reshape x placeHolder
 x_image = tf.reshape(X, [-1, 48, 48, 1])
 
-#dropOut for conv
-conv_drop = tf.placeholder(tf.float32,name="conv_drop")
 
 h_pool1 =conv2d(x_image, 1,32,"conv1")
 h_pool2 = conv2d(h_pool1,32,64,"conv2")
-h_pool2_drop = tf.nn.dropout(h_pool2, conv_drop)
-h_pool3 = conv2d(h_pool2_drop,64,128,"conv3")
+h_pool3 = conv2d(h_pool2,64,128,"conv3")
 
 flattern = tf.reshape(h_pool3, [-1, 6*6*128],name="FLATTERN")
 
@@ -89,8 +86,10 @@ keep_prob = tf.placeholder(tf.float32,name="keep_prob")
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
 
-y_ = fullyConnected(h_fc1_drop,1024,7,name="fc2")
+h_fc2 = fullyConnected(h_fc1_drop,1024,512,name="fc2")
+h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob)
 
+y_ =fullyConnected(h_fc2_drop,512,7,name="fc2")
 
 with tf.name_scope("X-entropy"):
     cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y,logits=y_))
@@ -114,12 +113,12 @@ summ = tf.summary.merge_all()
 for _ in range(1000):
     for bid in range(int(train_x.shape[0]/300)):
         x1,y1=train_x[bid*100:(bid+1)*100],y_train[bid*100:(bid+1)*100]
-        sess.run(train_step,feed_dict={X:x1, Y:y1,keep_prob: 0.5,conv_drop: 0.8})
+        sess.run(train_step,feed_dict={X:x1, Y:y1,keep_prob: 0.5})
     if _%10==0:
-        [a,s] =sess.run([accuracy, summ],feed_dict={X:x1, Y:y1,keep_prob: 0.5,conv_drop: 0.8}) 
+        [a,s] =sess.run([accuracy, summ],feed_dict={X:x1, Y:y1,keep_prob: 0.5}) 
         writer.add_summary(s,_)
         print("steps %d accuracy %g" %(_,a))
 save_path = saver.save(sess, "Emo_DropOut/My_first_model_train")
-print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0,conv_drop: 1.0}))
-print(sess.run(accuracy,feed_dict={X:private_test_x,Y:y_private,keep_prob: 1.0,conv_drop: 1.0}))
+print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0}))
+print(sess.run(accuracy,feed_dict={X:private_test_x,Y:y_private,keep_prob: 1.0}))
 
