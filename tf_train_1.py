@@ -51,14 +51,9 @@ def conv2d(x,size_in,size_out,name="conv2d"):
         b = tf.Variable(tf.constant(0.1, shape=[size_out]), name="B")
         conv1 = tf.nn.conv2d(x, w, strides=[1, 1, 1, 1], padding="SAME")
         activation1 = tf.nn.relu(conv1 + b)
-        w2 = tf.Variable(tf.truncated_normal([3,3,size_out,size_out]),name="W2")
-        b2 =tf.Variable(tf.constant(0.1,shape=[size_out]),name="B2")
-        conv2 = tf.nn.conv2d(activation1, w2, strides=[1, 1, 1, 1], padding="SAME")
-        activation2 = tf.nn.relu(conv2 + b2)
         tf.summary.histogram("weights", w)
         tf.summary.histogram("biases", b)
         tf.summary.histogram("activations1", activation1)
-        tf.summary.histogram("activations2", activation2)
     return tf.nn.max_pool(activation1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="SAME")
 #fullyconnected layer function
 def fullyConnected(linput,size_in,size_out,name="fc"):
@@ -104,8 +99,9 @@ sess.run(tf.global_variables_initializer())
 writer = tf.summary.FileWriter("graphTrain")
 writer.add_graph(sess.graph)
 saver = tf.train.Saver()
+#saver.restore(sess, "graphTrain/My_first_model_train")
 summ = tf.summary.merge_all()
-for _ in range(1000):
+for _ in range(100):
     for bid in range(int(train_x.shape[0]/300)):
         x1,y1=train_x[bid*100:(bid+1)*100],y_train[bid*100:(bid+1)*100]
         sess.run(train_step,feed_dict={X:x1, Y:y1,keep_prob: 0.5})
@@ -116,6 +112,5 @@ for _ in range(1000):
 save_path = saver.save(sess, "graphTrain/My_first_model_train")
 print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0}))
         
-
 
 
