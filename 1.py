@@ -75,13 +75,13 @@ h_pool3 = conv2d(h_pool2,64,128,"conv3")
 
 flattern = tf.reshape(h_pool3, [-1, 6*6*128],name="FLATTERN")
 
-h_fc1 = tf.nn.relu(fullyConnected(flattern,6*6*128,1024,name="fc1"),name="relu")
+h_fc1 = tf.nn.relu(fullyConnected(flattern,6*6*128,1024,name="fc1"),name="relu1")
 
 keep_prob = tf.placeholder(tf.float32,name="keep_prob")
 h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
 
-h_fc2 = fullyConnected(h_fc1_drop,512,256,name="fc2")
+h_fc2 = tf.nn.relufullyConnected(h_fc1_drop,512,256,name="fc2"),name="relu2")
 
 y_ =fullyConnected(h_fc2,256,7,name="fc3")
 
