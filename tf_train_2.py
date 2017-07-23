@@ -99,12 +99,12 @@ with tf.name_scope("accuracy"):
     correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     tf.summary.scalar("accuracy", accuracy)
+var = tf.argmax(y_, 1)
 sess.run(tf.global_variables_initializer())
 
 writer = tf.summary.FileWriter("graphTrain2")
 writer.add_graph(sess.graph)
 saver = tf.train.Saver()
-saver.restore(sess, "graphTrain/My_first_model_train")
 summ = tf.summary.merge_all()
 for _ in range(1000):
     for bid in range(int(train_x.shape[0]/300)):
@@ -114,8 +114,8 @@ for _ in range(1000):
         [a,s] =sess.run([accuracy, summ],feed_dict={X:x1, Y:y1,keep_prob: 0.5}) 
         writer.add_summary(s,_)
         print("steps %d accuracy %g" %(_,a))
-save_path = saver.save(sess, "graphTrain2/My_first_model_train2")
+
+save_path = saver.save(sess, "new/My_first_model_train")
 print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0}))
-        
 
 
