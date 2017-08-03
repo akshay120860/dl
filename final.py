@@ -106,6 +106,7 @@ sess.run(tf.global_variables_initializer())
 writer = tf.summary.FileWriter("new")
 writer.add_graph(sess.graph)
 saver = tf.train.Saver()
+saver.restore(sess, "new/My_first_model_train")
 summ = tf.summary.merge_all()
 for _ in range(1000):
     for bid in range(int(train_x.shape[0]/300)):
@@ -116,7 +117,7 @@ for _ in range(1000):
         writer.add_summary(s,_)
         print("steps %d accuracy %g" %(_,a))
 
-save_path = saver.save(sess, "new/My_first_model_train")
+save_path = saver.save(sess, "new2/My_first_model_train_2")
 print(sess.run(accuracy,feed_dict={X:public_test_x,Y:y_public,keep_prob: 1.0}))
 
 
